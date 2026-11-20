@@ -17,9 +17,9 @@ const CONFIG = {
 
 รักตะวันมากนะ ❤️`,
   cats: [
-    { emoji: "🥚", name: "ไข่ตุ๋น", desc: "สีขาวสะอาด นุ่มเหมือนไข่ตุ๋น", bg: "#fff" },
-    { emoji: "🐟", name: "ปลาเผา", desc: "ขาวมีลายดำๆ ดูแล้วหิวเลย", bg: "#eee" },
-    { emoji: "🍢", name: "หมูปิ้ง", desc: "น้ำตาล ดำ ท้องขาว", bg: "#f3dcc4" }
+    { name: "ไข่ตุ๋น", img: "photos/khaitun.jpg", pos: "50% 40%" },
+    { name: "ปลาเผา", img: "photos/plapao.jpg", pos: "50% 50%" },
+    { name: "หมูปิ้ง", img: "photos/mupping.jpg", pos: "70% 45%" }
   ],
   quiz: [
     { q: "แมวตัวไหนสีขาวทั้งตัว?", a: ["ไข่ตุ๋น", "ปลาเผา", "หมูปิ้ง"], c: 0 },
@@ -138,8 +138,7 @@ $("cake").onclick = () => {
 
 // แมวทั้งสาม
 $("cats").innerHTML = CONFIG.cats.map(c =>
-  `<div class="cat"><div class="face" style="background:${c.bg}">${c.emoji}</div>
-   <b>${c.name}</b><small>${c.desc}</small></div>`).join("");
+  `<figure class="cat"><img src="${c.img}" alt="${c.name}" style="object-position:${c.pos}"><figcaption>${c.name}</figcaption></figure>`).join("");
 
 // มินิเกม
 let qi = 0, score = 0;
