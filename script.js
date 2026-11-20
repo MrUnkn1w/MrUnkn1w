@@ -1,9 +1,25 @@
 /* ====== แก้ข้อมูลตรงนี้ได้เลย ====== */
 const CONFIG = {
   name: "ตะวัน",                  // ชื่อ/ชื่อเล่นแฟน
+  age: 22,                        // อายุที่ครบในปีนี้
   unlockAt: "2026-11-21T00:00:00", // เวลาที่เริ่มเป่าเค้กได้ (เวลาเครื่องของผู้เปิด)
-  birthday: "11-21",              // วันเกิด รูปแบบ เดือน-วัน (MM-DD)
-  from: "",
+  gate: {
+    code: "28022019",             // รหัสผ่าน (วันครบรอบ ววดดปปปป ปีเป็น ค.ศ.)
+    clue: "คำใบ้: วันครบรอบของเรา |(ปีเป็น ค.ศ.)",
+    hint: "เดือนที่แตกต่างจากพวก |ปีที่ SEVENTEEN |ปล่อยอัลบั้มที่ 3 ของค่าย |ชื่อ An Ode |และ Ode to You World Tour",
+    teases: [
+      "น้องลืมเค้าแล้ว|จำได้แต่ชู้วทั้งหลาย|(แงวทั้งหลาย|แระชู้วอีกมากมาย) 😤",
+      "ถึงกับต้องขอใบ้เลยหรอเบบี๋ 🥲|วันครบรอบนะ ไม่ใช่วันสอบ",
+      "จำวันคอนเสิร์ตได้|แต่วันของเราจำไม่ได้ ฮึ 🙄",
+      "ใบ้ให้ก็ได้|แต่เค้าน้อยใจนะ|จดไว้ในใจแล้ว 📝"
+    ],
+    wrong: [
+      "ผิดจ้าาา ว๊ายยย ลืมได้ไงเนี่ย 😤",
+      "ไม่ใช่ๆ นึกดีๆ สิน้องอ้วง 🥲",
+      "อ่อนมากกก ขอใบ้เลยมั้ย 🙄",
+      "เค้าน้อยใจแย้วนะ ลองใหม่ 😤"
+    ]
+  },
   letter:
 `สุขสันต์วันเกิดนะ|น้องงง 🎂
 
@@ -31,19 +47,6 @@ const CONFIG = {
     "โอ๊ยยย ผิดอีกแย้ว คิดดีๆ สิน้องอ้วง 😤",
     "เสียใจนะ เค้าน้อยใจแย้ว 🥲 ตอบใหม่!"
   ],
-  timeline: [
-    { date: "วันที่เราเจอกัน",   text: "วันแรกที่ได้รู้จักเธอ" },
-    { date: "วันที่เริ่มคุยกัน",  text: "คุยกันไม่หยุดเลยใช่ไหม" },
-    { date: "วันที่เป็นแฟนกัน",  text: "วันที่ดีที่สุดของเรา" },
-    { date: "วันนี้",            text: "และเราจะไปด้วยกันอีกไกล" }
-  ],
-  // ใส่รูปไว้ในโฟลเดอร์ photos/ แล้วแก้ชื่อไฟล์ตรงนี้
-  photos: [
-    { src: "photos/1.jpg", caption: "รูปที่ 1" },
-    { src: "photos/2.jpg", caption: "รูปที่ 2" },
-    { src: "photos/3.jpg", caption: "รูปที่ 3" },
-    { src: "photos/4.jpg", caption: "รูปที่ 4" }
-  ],
   reasons: [
     "น้องรักเค้ามากๆ (ถึงแม้จะ|รักแงวมากกว่า|เค้าก็ตาม)",
     "เบบี๋ตามใจเค้าเก่ง (ถึงแม้ว่า|จาแอบดื้อ|อยู่บ้าง|ก็ตาม)",
@@ -56,55 +59,19 @@ const CONFIG = {
 /* ================================== */
 
 const $ = id => document.getElementById(id);
+const root = document.documentElement;
 // ตัดบรรทัดตามวลี: "|" = จุดที่ขึ้นบรรทัดใหม่ได้, วลีระหว่างนั้นจะไม่ถูกหักกลางคำ
 const fmt = s => s.split(/( |\||\n)/).map(t =>
   t === "|" ? "<wbr>" : t === "\n" ? "<br>" : t === " " ? " " : t === "" ? "" : `<span class="nw">${t}</span>`).join("");
+const shakeEl = el => { el.classList.remove("shake"); void el.offsetWidth; el.classList.add("shake"); };
 
 $("name").textContent = CONFIG.name;
-$("letter").innerHTML = fmt(CONFIG.letter + (CONFIG.from ? "\n\n" + CONFIG.from : ""));
-
-// ไทม์ไลน์
-$("timeline").innerHTML = CONFIG.timeline.map(t =>
-  `<div class="tl"><b>${t.date}</b><small>${t.text}</small></div>`).join("");
-
-// แกลเลอรี (ถ้ารูปไม่มี จะซ่อนไว้)
-$("gallery").innerHTML = CONFIG.photos.map((p, i) =>
-  `<figure style="--r:${(i % 2 ? 1 : -1) * (1 + i % 3)}deg">
-     <img src="${p.src}" alt="" onerror="this.closest('figure').remove()">
-     <figcaption>${p.caption}</figcaption></figure>`).join("");
-
-// นับถอยหลัง
-let unlocked = false, blown = false;
-document.documentElement.classList.add("locked");
-$("hint").textContent = "ยังเป่าเค้กไม่ได้นะ รอให้นับถอยหลังจบก่อน 🔒";
-function tick() {
-  const now = new Date(), at = new Date(CONFIG.unlockAt);
-  if (now >= at) {
-    if (!unlocked) {
-      unlocked = true;
-      if (!blown) $("hint").textContent = "ถึงเวลาแล้ว! แตะที่เค้กเพื่อเป่าเทียน 🕯️";
-    }
-    $("countdown").innerHTML = `<div style="font-size:1.2rem">🎉 วันนี้วันเกิด${CONFIG.name}! 🎉</div>`;
-    return;
-  }
-  const s = Math.floor((at - now) / 1000);
-  const v = [[Math.floor(s / 86400), "วัน"], [Math.floor(s % 86400 / 3600), "ชม."],
-             [Math.floor(s % 3600 / 60), "นาที"], [s % 60, "วินาที"]];
-  $("countdown").innerHTML = v.map(([n, l]) => `<div><b>${n}</b><span>${l}</span></div>`).join("");
+$("age").textContent = "TURNING " + CONFIG.age;
+{
+  const d = new Date(CONFIG.unlockAt), p = n => String(n).padStart(2, "0");
+  $("eyebrow").textContent = `${p(d.getDate())} / ${p(d.getMonth() + 1)} / ${d.getFullYear()} · BIRTHDAY MODE ON`;
 }
-tick(); setInterval(tick, 1000);
-
-// หัวใจลอย
-setInterval(() => {
-  const h = document.createElement("span");
-  h.className = "heart";
-  h.textContent = ["❤️", "💖", "💕", "🌸"][Math.random() * 4 | 0];
-  h.style.left = Math.random() * 100 + "vw";
-  h.style.fontSize = 14 + Math.random() * 22 + "px";
-  h.style.animationDuration = 6 + Math.random() * 6 + "s";
-  $("hearts").appendChild(h);
-  setTimeout(() => h.remove(), 12000);
-}, 600);
+$("letter").innerHTML = fmt(CONFIG.letter);
 
 // คอนเฟตติ
 const cv = $("confetti"), cx = cv.getContext("2d");
@@ -112,7 +79,7 @@ let bits = [];
 function resize() { cv.width = innerWidth; cv.height = innerHeight; }
 resize(); addEventListener("resize", resize);
 function boom() {
-  const colors = ["#ff6b9d", "#ffd54f", "#7ee0ff", "#b388ff", "#fff", "#ff8a65"];
+  const colors = ["#5ac8fa", "#8b5cf6", "#ff4d8d", "#ffd166", "#ffffff", "#9be7ff"];
   for (let i = 0; i < 160; i++) bits.push({
     x: cv.width / 2, y: cv.height / 2.2,
     vx: (Math.random() - .5) * 16, vy: Math.random() * -14 - 3,
@@ -131,12 +98,92 @@ function boom() {
   requestAnimationFrame(loop);
 })();
 
-// เป่าเทียน
+// อนุภาคลอย
+setInterval(() => {
+  const h = document.createElement("span");
+  h.className = "heart";
+  h.textContent = ["♥", "✦", "✧", "♡"][Math.random() * 4 | 0];
+  h.style.color = ["#5ac8fa", "#ff4d8d", "#8b5cf6"][Math.random() * 3 | 0];
+  h.style.left = Math.random() * 100 + "vw";
+  h.style.fontSize = 12 + Math.random() * 20 + "px";
+  h.style.animationDuration = 6 + Math.random() * 6 + "s";
+  $("hearts").appendChild(h);
+  setTimeout(() => h.remove(), 12000);
+}, 700);
+
+/* ---------- หน้ารหัสผ่าน ---------- */
+{
+  const G = CONFIG.gate, len = G.code.length;
+  const pwEl = $("pw"), cells = $("cells"), msg = $("pwmsg"), box = $("hintBox");
+  let hintN = 0, wrongN = 0, entered = false;
+  $("clue").innerHTML = fmt(G.clue);
+  const draw = () => {
+    const v = pwEl.value;
+    cells.innerHTML = Array.from({ length: len }, (_, i) =>
+      `<b class="${i === v.length && !entered ? "on" : ""}">${v[i] || ""}</b>`).join("");
+  };
+  function tryCode() {
+    const v = pwEl.value;
+    msg.classList.remove("ok");
+    if (v.length < len) { msg.textContent = `ต้องใส่ ${len} หลักนะเบบี๋`; shakeEl(cells); return; }
+    if (v === G.code) {
+      entered = true; draw();
+      msg.classList.add("ok"); msg.textContent = "ถูกต้อง! ยังจำเค้าได้อยู่นี่นา 🥹";
+      boom();
+      setTimeout(() => {
+        $("pwscreen").classList.add("leave");
+        root.classList.add("in");
+        setTimeout(() => { $("pwscreen").hidden = true; scrollTo(0, 0); }, 650);
+      }, 900);
+      return;
+    }
+    msg.textContent = G.wrong[wrongN++ % G.wrong.length];
+    shakeEl(cells);
+    setTimeout(() => { if (!entered) { pwEl.value = ""; draw(); } }, 450);
+  }
+  pwEl.addEventListener("input", () => {
+    pwEl.value = pwEl.value.replace(/\D/g, "").slice(0, len);
+    draw();
+    if (pwEl.value.length === len) tryCode();
+  });
+  pwEl.addEventListener("focus", draw);
+  pwEl.addEventListener("blur", () => { cells.querySelectorAll(".on").forEach(b => b.classList.remove("on")); });
+  $("pwform").onsubmit = e => { e.preventDefault(); tryCode(); };
+  $("hintBtn").onclick = () => {
+    box.hidden = false;
+    box.innerHTML = `<p class="tease">${fmt(G.teases[hintN++ % G.teases.length])}</p><p>💡 ${fmt(G.hint)}</p>`;
+    shakeEl(box);
+    pwEl.focus();
+  };
+  draw();
+  pwEl.focus();
+}
+
+/* ---------- เค้ก: เป่าได้เมื่อถึงเวลา ---------- */
+let unlocked = false, blown = false;
+root.classList.add("locked");
+$("hint").textContent = "ยังเป่าเค้กไม่ได้นะ รอให้นับถอยหลังจบก่อน 🔒";
+function tick() {
+  const now = new Date(), at = new Date(CONFIG.unlockAt);
+  if (now >= at) {
+    if (!unlocked) {
+      unlocked = true;
+      if (!blown) $("hint").textContent = "ถึงเวลาแล้ว! แตะที่เค้กเพื่อเป่าเทียน 🕯️";
+    }
+    $("countdown").innerHTML = `<div style="font-size:1.1rem">🎉 วันนี้วันเกิด${CONFIG.name}! 🎉</div>`;
+    return;
+  }
+  const s = Math.floor((at - now) / 1000);
+  const v = [[Math.floor(s / 86400), "วัน"], [Math.floor(s % 86400 / 3600), "ชม."],
+             [Math.floor(s % 3600 / 60), "นาที"], [s % 60, "วินาที"]];
+  $("countdown").innerHTML = v.map(([n, l]) => `<div><b>${n}</b><span>${l}</span></div>`).join("");
+}
+tick(); setInterval(tick, 1000);
+
 $("cake").onclick = () => {
   if (blown) return;
-  const cake = $("cake");
   if (!unlocked) {
-    cake.classList.remove("shake"); void cake.offsetWidth; cake.classList.add("shake");
+    shakeEl($("cake"));
     $("hint").textContent = "ยังไม่ถึงเวลานะ 🔒 รอให้นับถอยหลังจบก่อน";
     return;
   }
@@ -144,7 +191,7 @@ $("cake").onclick = () => {
   $("flame").classList.add("out");
   boom();
   $("hint").textContent = "🎉 สุขสันต์วันเกิดนะ! อย่าลืมขอพรด้วยล่ะ 🎉 เลื่อนลงไปดูของขวัญได้เลย ↓";
-  document.documentElement.classList.remove("locked");
+  root.classList.remove("locked");
   setTimeout(() => $("wish").scrollIntoView({ behavior: "smooth" }), 2500);
 };
 
@@ -153,14 +200,14 @@ $("cats").innerHTML = CONFIG.cats.map(c =>
   `<figure class="cat"><img src="${c.img}" alt="${c.name}" style="object-position:${c.pos}"><figcaption>${c.name}</figcaption></figure>`).join("");
 
 // มินิเกม: ต้องตอบถูกครบทุกข้อ ถึงจะเลื่อนไปดูเหตุผลกับของขวัญได้
-document.documentElement.classList.add("gated");
+root.classList.add("gated");
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
 let qi = 0, mockI = -1;
 function showQ() {
   const box = $("quiz");
   if (qi >= CONFIG.quiz.length) {
     box.innerHTML = `<p class="reason">ถูกครบทั้ง ${CONFIG.quiz.length} ข้อเลย! 🥰 รู้ใจเค้าจริงๆ<br>เลื่อนลงไปดูเหตุผลที่รักน้องกับของขวัญได้เลย ↓</p>`;
-    document.documentElement.classList.remove("gated");
+    root.classList.remove("gated");
     boom();
     setTimeout(() => $("reasons").scrollIntoView({ behavior: "smooth" }), 1800);
     return;
@@ -178,7 +225,7 @@ function showQ() {
       b.classList.add("bad"); b.disabled = true;
       mockI = (mockI + 1 + Math.random() * (CONFIG.mocks.length - 1) | 0) % CONFIG.mocks.length;
       const m = $("mock"); m.textContent = CONFIG.mocks[mockI];
-      m.classList.remove("shake"); void m.offsetWidth; m.classList.add("shake");
+      shakeEl(m);
     }
   });
 }
@@ -191,7 +238,7 @@ $("reasonBtn").onclick = () => {
   last = i; $("reason").innerHTML = "💗 " + fmt(CONFIG.reasons[i]);
 };
 
-// ของขวัญ (ป๊อปอัปรายการเหตุผลที่รัก)
+// ของขวัญ (ป๊อปอัปคูปอง)
 const modal = $("modal");
 $("coupon").innerHTML = fmt(CONFIG.gift);
 const closeModal = () => { modal.hidden = true; };
@@ -202,15 +249,3 @@ $("gift").onclick = () => {
 $("mclose").onclick = closeModal;
 modal.onclick = e => { if (e.target === modal) closeModal(); };
 addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
-
-// แสดงผลตอนเลื่อน
-const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && e.target.classList.add("show")), { threshold: .15 });
-document.querySelectorAll(".reveal").forEach(el => io.observe(el));
-
-// เพลง (ใส่ไฟล์ music.mp3 ไว้ข้างๆ index.html)
-const au = $("music"), mb = $("musicBtn");
-mb.classList.add("off");
-mb.onclick = () => {
-  if (au.paused) { au.play().then(() => mb.classList.remove("off")).catch(() => {}); }
-  else { au.pause(); mb.classList.add("off"); }
-};

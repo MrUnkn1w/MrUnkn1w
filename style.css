@@ -1,111 +1,155 @@
+/* ธีม: ดาร์กนีออน สีฟ้า Sky Blue (สีโปรดของเค้า) + ชมพู + ม่วง
+   เลย์เอาต์: หน้ารหัสผ่าน -> หน้าเค้ก -> การ์ดกระจกเรียงลงมา */
 :root{
-  --pink:#ff6b9d; --rose:#ffb3cd; --cream:#fff5f8; --deep:#c2185b; --ink:#5a2a3c;
+  color-scheme:dark;
+  --bg:#070b18; --ink:#eaf2ff; --mute:#9db0d0;
+  --sky:#5ac8fa; --pink:#ff4d8d; --violet:#8b5cf6;
+  --glass:rgba(255,255,255,.06); --line:rgba(255,255,255,.14);
+  --grad:linear-gradient(100deg,#5ac8fa,#8b5cf6 55%,#ff4d8d);
+  --display:'Kanit',sans-serif; --body:'Prompt',sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
 html{scroll-behavior:smooth}
+html:not(.in){overflow:hidden}
 body{
-  font-family:'Mali',sans-serif;color:var(--ink);
-  background:linear-gradient(160deg,#ffe3ee,#fff5f8 40%,#ffd9e8);
-  background-attachment:fixed;overflow-x:hidden;
+  background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  overflow-x:hidden;
 }
-.script{font-family:'Pacifico',cursive;color:var(--deep);font-weight:400}
-#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
-.hearts{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-.heart{position:absolute;bottom:-40px;animation:floatUp linear forwards;opacity:.7}
+
+/* พื้นหลังออโรรา + ตาราง */
+.aurora{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;
+  background:radial-gradient(900px 600px at 50% -10%,#16225a,transparent 60%),var(--bg)}
+.aurora::after{content:"";position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:44px 44px;-webkit-mask-image:radial-gradient(ellipse at 50% 30%,#000,transparent 75%);mask-image:radial-gradient(ellipse at 50% 30%,#000,transparent 75%)}
+.aurora i{position:absolute;border-radius:50%;filter:blur(80px);opacity:.5;animation:drift 16s ease-in-out infinite alternate}
+.aurora i:nth-child(1){width:60vmax;height:60vmax;left:-20vmax;top:-10vmax;background:#2b8fd6}
+.aurora i:nth-child(2){width:50vmax;height:50vmax;right:-20vmax;top:25vh;background:#7a43ee;animation-delay:-5s}
+.aurora i:nth-child(3){width:45vmax;height:45vmax;left:10vw;bottom:-25vmax;background:#e0346f;animation-delay:-9s}
+@keyframes drift{to{transform:translate(6vw,-5vh) scale(1.15)}}
+
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:60}
+.hearts{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.heart{position:absolute;bottom:-40px;animation:floatUp linear forwards;opacity:.8;text-shadow:0 0 12px currentColor}
 @keyframes floatUp{to{transform:translateY(-110vh) rotate(25deg);opacity:0}}
 
-section{position:relative;z-index:1}
-.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}
-.hero h1{font-size:clamp(2.6rem,10vw,5rem);margin:6px 0}
-.hero h2{font-size:clamp(1.6rem,6vw,2.6rem);color:var(--pink);margin-bottom:20px}
-.small{opacity:.8}
-.hint{font-size:.9rem;opacity:.7;margin-top:10px}
-.down{font-size:2rem;color:var(--pink);text-decoration:none;margin-top:18px;animation:bob 1.6s infinite}
+.app{display:none;position:relative;z-index:2}
+html.in .app{display:block}
+
+/* ---------- หน้ารหัสผ่าน ---------- */
+.pwscreen{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;
+  padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+  overflow-y:auto;transition:opacity .6s,transform .6s}
+.pwscreen.leave{opacity:0;transform:scale(1.06);pointer-events:none}
+.gcard{width:100%;max-width:440px;margin:auto;text-align:center;padding:34px 22px;border-radius:28px;
+  background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  box-shadow:0 24px 70px rgba(0,0,0,.5),0 0 0 1px rgba(90,200,250,.08) inset}
+.tag{font:600 .72rem var(--display);letter-spacing:.3em;color:var(--sky)}
+.gcard h1{font:800 clamp(1.9rem,8vw,2.4rem)/1.2 var(--display);margin:8px 0 6px;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.clue{color:var(--mute);font-size:.98rem}
+.code{position:relative;display:block;margin:22px 0 6px;cursor:text}
+.code input{position:absolute;inset:0;width:100%;height:100%;opacity:0;font-size:16px;border:0}
+.cells{display:flex;gap:5px;justify-content:center}
+.cells b{flex:1;max-width:40px;min-width:0;height:48px;display:grid;place-items:center;border-radius:11px;
+  font:600 1.4rem var(--display);background:rgba(255,255,255,.05);border:1px solid var(--line);font-variant-numeric:tabular-nums}
+.cells b:nth-child(2),.cells b:nth-child(4){margin-right:9px}
+.cells b.on{border-color:var(--sky);box-shadow:0 0 0 3px rgba(90,200,250,.22),0 0 18px rgba(90,200,250,.35)}
+.msg{min-height:1.7em;margin:10px 0 12px;color:var(--pink);font-weight:600}
+.msg.ok{color:var(--sky)}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.hintbox{margin-top:16px;text-align:left;font-size:.95rem;border-radius:14px;padding:12px 14px;
+  background:rgba(90,200,250,.08);border:1px dashed rgba(90,200,250,.5)}
+.hintbox .tease{color:var(--pink);font-weight:600;margin-bottom:6px}
+
+/* ---------- หน้าแรก ---------- */
+section{position:relative}
+.hero{min-height:92vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:44px 0 24px}
+.eyebrow{font:600 .75rem var(--display);letter-spacing:.32em;color:var(--sky);text-transform:uppercase}
+.hero h1{font:800 clamp(3rem,15vw,6.4rem)/.95 var(--display);text-transform:uppercase;letter-spacing:-.02em;margin:14px 0 12px;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 26px rgba(139,92,246,.55))}
+.hero h2{font:600 clamp(1.5rem,6vw,2.2rem) var(--display);display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap}
+.age{font:600 .8rem var(--display);letter-spacing:.2em;padding:4px 12px;border-radius:999px;border:1px solid var(--sky);color:var(--sky);box-shadow:0 0 14px rgba(90,200,250,.4)}
+.hint{font-size:.92rem;color:var(--mute);margin-top:12px;max-width:34ch}
+.down{font-size:2rem;color:var(--sky);text-decoration:none;margin-top:18px;animation:bob 1.6s infinite}
 @keyframes bob{50%{transform:translateY(8px)}}
 
-/* เค้ก */
-.cake{position:relative;width:200px;height:170px;margin:30px auto 0;cursor:pointer}
+/* เค้กนีออน */
+.cake{position:relative;width:200px;height:175px;margin:34px auto 0;cursor:pointer}
+.cake::before{content:"";position:absolute;left:50%;bottom:-8px;width:260px;height:60px;transform:translateX(-50%);
+  background:radial-gradient(ellipse,rgba(255,77,141,.45),transparent 70%);filter:blur(10px)}
 .cake div{position:absolute;left:50%;transform:translateX(-50%)}
-.plate{bottom:0;width:230px;height:14px;background:#fff;border-radius:50%;box-shadow:0 4px 10px #0002}
+.plate{bottom:0;width:230px;height:14px;background:linear-gradient(90deg,#26335f,#6b7fc0,#26335f);border-radius:50%;box-shadow:0 4px 14px rgba(0,0,0,.5)}
 .layer{border-radius:12px 12px 6px 6px}
-.l1{bottom:12px;width:200px;height:60px;background:linear-gradient(#ff8fb7,#ff6b9d)}
-.l2{bottom:72px;width:140px;height:50px;background:linear-gradient(#ffe0ec,#ffb3cd)}
+.l1{bottom:12px;width:200px;height:60px;background:linear-gradient(#ff7ab0,#ff4d8d);box-shadow:0 0 28px rgba(255,77,141,.5)}
+.l2{bottom:72px;width:140px;height:50px;background:linear-gradient(#bfeaff,#5ac8fa);box-shadow:0 0 28px rgba(90,200,250,.5)}
 .l1::before,.l2::before{content:"";position:absolute;top:-6px;left:0;right:0;height:16px;
-  background:radial-gradient(circle at 10px 8px,#fff 9px,transparent 10px) 0 0/22px 16px repeat-x;}
-.candle{bottom:120px;width:10px;height:36px;background:repeating-linear-gradient(45deg,#fff,#fff 6px,#ff6b9d 6px,#ff6b9d 12px);border-radius:3px}
+  background:radial-gradient(circle at 10px 8px,#fff 9px,transparent 10px) 0 0/22px 16px repeat-x}
+.candle{bottom:120px;width:10px;height:36px;background:repeating-linear-gradient(45deg,#fff,#fff 6px,#5ac8fa 6px,#5ac8fa 12px);border-radius:3px}
 .flame{bottom:154px;width:14px;height:22px;background:radial-gradient(#fff 15%,#ffd54f 45%,#ff9800);
-  border-radius:50% 50% 50% 50%/60% 60% 40% 40%;animation:flick .25s infinite alternate;box-shadow:0 0 18px 6px #ffb74d99;transition:.4s}
+  border-radius:50% 50% 50% 50%/60% 60% 40% 40%;animation:flick .25s infinite alternate;box-shadow:0 0 22px 8px rgba(255,183,77,.6);transition:.4s}
 .flame.out{opacity:0;transform:translateX(-50%) scale(0)}
 @keyframes flick{to{transform:translateX(-50%) scale(1.1,.93) rotate(-3deg)}}
 
-.countdown{margin-top:22px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.countdown div{background:#fff;border-radius:14px;padding:8px 14px;box-shadow:0 4px 12px #ff6b9d33;min-width:64px}
-.countdown b{display:block;font-size:1.4rem;color:var(--deep)}
-.countdown span{font-size:.75rem}
+.countdown{margin-top:24px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.countdown div{background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:8px 14px;min-width:68px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.countdown b{display:block;font:800 1.6rem var(--display);font-variant-numeric:tabular-nums;color:var(--sky);text-shadow:0 0 16px rgba(90,200,250,.6)}
+.countdown span{font-size:.72rem;color:var(--mute)}
 
-/* การ์ด */
-.card-sec{max-width:760px;margin:48px auto;padding:36px 24px;text-align:center;
-  background:#ffffffcc;border-radius:26px;box-shadow:0 10px 30px #ff6b9d26;backdrop-filter:blur(4px)}
-.card-sec h3{font-size:2rem;margin-bottom:20px}
-.letter{line-height:2;white-space:pre-line;text-align:left;font-size:1.05rem}
-.reveal{opacity:0;transform:translateY(30px);transition:.8s}
-.reveal.show{opacity:1;transform:none}
+/* ---------- การ์ด ---------- */
+.card-sec{max-width:760px;margin:40px auto;padding:34px 22px;text-align:center;border-radius:28px;
+  background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.card-sec h3{font:600 clamp(1.5rem,6vw,1.9rem)/1.3 var(--display);margin-bottom:20px;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.letter{line-height:2;text-align:left;font-size:1.05rem}
+.nw{white-space:nowrap}
 
-.timeline{text-align:left;border-left:3px solid var(--rose);margin-left:10px;padding-left:20px}
-.tl{position:relative;margin-bottom:22px}
-.tl::before{content:"♥";position:absolute;left:-32px;top:0;color:var(--pink);background:#fff;border-radius:50%;font-size:.9rem}
-.tl b{color:var(--deep)}
-.tl small{display:block;opacity:.6}
-
-.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
-.gallery figure{background:#fff;padding:8px 8px 4px;border-radius:8px;box-shadow:0 4px 12px #0002;transform:rotate(var(--r));transition:.3s}
-.gallery figure:hover{transform:rotate(0) scale(1.06)}
-.gallery img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:4px;background:var(--rose)}
-.gallery figcaption{font-size:.8rem;padding:6px 0}
-
-.btn{background:var(--pink);color:#fff;border:0;border-radius:30px;padding:12px 26px;font:inherit;font-weight:700;cursor:pointer;box-shadow:0 6px 16px #ff6b9d66;transition:.2s}
-.btn:hover{transform:scale(1.05)}
-.reason{margin-top:18px;font-size:1.15rem;min-height:2em}
-.gift{font-size:5rem;cursor:pointer;display:inline-block;animation:bob 1.4s infinite}
-.gift.open{animation:none;transform:scale(1.3) rotate(10deg)}
-
-footer{text-align:center;padding:30px;opacity:.7;position:relative;z-index:1}
-.music-btn{position:fixed;right:16px;bottom:16px;z-index:60;width:48px;height:48px;border-radius:50%;border:0;background:var(--pink);color:#fff;font-size:1.3rem;cursor:pointer;box-shadow:0 4px 14px #0003}
-.music-btn.off{opacity:.5}
-
-/* แมว + มินิเกม */
-.cats{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
-.cat{width:170px;background:#fff;padding:8px 8px 6px;border-radius:8px;box-shadow:0 4px 14px #0002;transform:rotate(var(--r,0deg));transition:.3s}
+.cats{display:flex;gap:18px;justify-content:center;flex-wrap:wrap}
+.cat{width:170px;background:#fff;color:#7a1d4a;padding:8px 8px 6px;border-radius:8px;
+  box-shadow:0 10px 28px rgba(0,0,0,.5),0 0 22px rgba(90,200,250,.25);transform:rotate(var(--r,0deg));transition:.3s}
 .cat:nth-child(1){--r:-2deg}.cat:nth-child(2){--r:1.5deg}.cat:nth-child(3){--r:-1deg}
 .cat:hover{transform:rotate(0) scale(1.05)}
 .cat img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:4px;display:block}
-.cat figcaption{padding:8px 0 2px;color:var(--deep);font-weight:700}
-.opt{display:block;margin:10px auto;min-width:200px}
-.opt:disabled{cursor:default}
+.cat figcaption{padding:8px 0 2px;font-weight:600}
 
-/* ล็อกเนื้อหาจนกว่าจะเป่าเค้ก */
-html.locked,html.locked body{overflow:hidden}
+.btn{background:var(--grad);color:#fff;border:0;border-radius:999px;padding:12px 26px;font:600 1rem var(--body);cursor:pointer;
+  box-shadow:0 8px 26px rgba(139,92,246,.45);transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn:focus-visible{outline:2px solid var(--sky);outline-offset:3px}
+.btn.ghost{background:transparent;border:1px solid var(--line);box-shadow:none;color:var(--ink)}
+.opt{display:block;margin:10px auto;min-width:min(260px,100%);background:rgba(255,255,255,.07);border:1px solid var(--line);box-shadow:none;color:var(--ink)}
+.opt:hover:not(:disabled){border-color:var(--sky);box-shadow:0 0 16px rgba(90,200,250,.35)}
+.opt:disabled{cursor:default}
+.opt.good{background:#10a874;border-color:#2ee6a6}
+.opt.bad{background:rgba(255,77,141,.2);border-color:var(--pink);opacity:.75;text-decoration:line-through}
+.reason{margin-top:18px;font-size:1.1rem;min-height:2em}
+.mock{margin-top:12px;font-weight:600;color:var(--pink);min-height:1.8em}
+
+.gift{font-size:5rem;cursor:pointer;display:inline-block;animation:bob 1.4s infinite;filter:drop-shadow(0 0 20px rgba(255,77,141,.6))}
+.gift.open{animation:none;transform:scale(1.3) rotate(10deg)}
+footer{text-align:center;padding:30px 0 40px;color:var(--mute)}
+
+/* ล็อกเนื้อหา */
 html.locked .after{display:none}
+html.gated .gate{display:none}
 .shake{animation:shake .4s}
 @keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
 
-.nw{white-space:nowrap}
-
 /* ป๊อปอัปของขวัญ */
-.modal{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;background:#5a2a3ccc}
-.modal[hidden]{display:none}
-.mbox{position:relative;background:#fff;border-radius:22px;max-width:480px;width:100%;max-height:85vh;overflow-y:auto;padding:48px 22px 22px;box-shadow:0 20px 50px #0004;animation:pop .35s}
+.modal{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(3,6,16,.8)}
+.mbox{position:relative;background:#101938;border:1px solid var(--line);border-radius:22px;max-width:480px;width:100%;max-height:85vh;overflow-y:auto;
+  padding:48px 22px 22px;box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 40px rgba(139,92,246,.3);animation:pop .35s}
 @keyframes pop{from{transform:scale(.85);opacity:0}}
-.mbox h3{font-size:1.6rem;text-align:center;margin-bottom:14px}
-.mbox h4{color:var(--deep);margin:18px 0 10px}
-.coupon{background:var(--cream);border:2px dashed var(--pink);border-radius:14px;padding:14px;text-align:center;font-weight:700;font-size:1.1rem}
-.rlist{list-style:none;display:grid;gap:10px}
-.rlist li{padding-left:28px;position:relative;line-height:1.7}
-.rlist li::before{content:"💗";position:absolute;left:0;top:0}
-.mclose{position:absolute;top:10px;right:12px;border:0;background:var(--rose);color:#fff;width:32px;height:32px;border-radius:50%;font-size:1rem;cursor:pointer}
+.coupon{background:rgba(90,200,250,.08);border:2px dashed var(--sky);border-radius:14px;padding:16px;text-align:center;font:600 1.2rem var(--display);
+  box-shadow:0 0 24px rgba(90,200,250,.25)}
+.mclose{position:absolute;top:10px;right:12px;border:1px solid var(--line);background:transparent;color:var(--ink);width:32px;height:32px;border-radius:50%;font-size:1rem;cursor:pointer}
 
-/* ล็อกเหตุผล/ของขวัญจนกว่าจะตอบเกมถูกครบ */
-html.gated .gate{display:none}
-.opt.good{background:#4caf50}
-.opt.bad{background:#e53935;opacity:.7;text-decoration:line-through}
-.mock{margin-top:12px;font-weight:700;color:var(--deep);min-height:1.8em}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}

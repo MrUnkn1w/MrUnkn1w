@@ -2,21 +2,45 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Happy Birthday 🎂</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Happy Birthday ตะวัน</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;800&family=Prompt:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
 <canvas id="confetti"></canvas>
 <div class="hearts" id="hearts"></div>
 
+<!-- รหัสผ่านก่อนเข้าเว็บ -->
+<section class="pwscreen" id="pwscreen">
+  <div class="gcard">
+    <p class="tag">// PRIVATE ACCESS</p>
+    <h1>ใส่รหัสก่อนเข้านะ</h1>
+    <p class="clue" id="clue"></p>
+    <form id="pwform" autocomplete="off">
+      <label class="code" for="pw">
+        <input id="pw" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" aria-label="รหัสผ่าน 8 หลัก">
+        <span class="cells" id="cells"></span>
+      </label>
+      <p class="msg" id="pwmsg" aria-live="polite"></p>
+      <div class="row">
+        <button class="btn" type="submit">เข้าเลย</button>
+        <button class="btn ghost" type="button" id="hintBtn">ขอคำใบ้ 💡</button>
+      </div>
+      <div class="hintbox" id="hintBox" hidden></div>
+    </form>
+  </div>
+</section>
+
+<main class="app">
+
 <!-- หน้าแรก -->
 <section class="hero" id="hero">
-  <p class="small">วันนี้เป็นวันพิเศษของคนพิเศษ</p>
-  <h1 class="script">Happy Birthday</h1>
-  <h2 id="name">ตะวัน</h2>
+  <p class="eyebrow" id="eyebrow"></p>
+  <h1>Happy<br>Birthday</h1>
+  <h2><span id="name"></span> <span class="age" id="age"></span></h2>
   <div class="cake" id="cake" title="แตะเพื่อเป่าเทียน">
     <div class="flame" id="flame"></div>
     <div class="candle"></div>
@@ -24,59 +48,46 @@
     <div class="layer l2"></div>
     <div class="plate"></div>
   </div>
-  <p class="hint" id="hint">แตะที่เค้กเพื่อเป่าเทียน 🕯️</p>
+  <p class="hint" id="hint"></p>
   <div class="countdown" id="countdown"></div>
-  <a href="#wish" class="down after">↓</a>
+  <a href="#wish" class="down after" aria-label="เลื่อนลง">↓</a>
 </section>
 
 <!-- คำอวยพร -->
-<section id="wish" class="card-sec reveal after">
-  <h3 class="script">ถึงน้องตววววว</h3>
+<section id="wish" class="card-sec after">
+  <h3>ถึงน้องตววววว</h3>
   <p id="letter" class="letter"></p>
 </section>
 
-<!-- ไทม์ไลน์ -->
-<section class="card-sec reveal after">
-  <h3 class="script">เรื่องราวของเรา</h3>
-  <div class="timeline" id="timeline"></div>
-</section>
-
-<!-- รูปภาพ -->
-<section class="card-sec reveal after">
-  <h3 class="script">ความทรงจำ</h3>
-  <div class="gallery" id="gallery"></div>
-</section>
-
 <!-- แมวทั้งสาม -->
-<section class="card-sec reveal after">
-  <h3 class="script">ลูกๆ ทั้งสามของน้อง 🐾</h3>
+<section class="card-sec after">
+  <h3>ลูกๆ ทั้งสามของน้อง 🐾</h3>
   <div class="cats" id="cats"></div>
 </section>
 
 <!-- มินิเกม -->
-<section class="card-sec reveal after">
-  <h3 class="script">มินิเกมตอบคำถาม</h3>
+<section class="card-sec after">
+  <h3>มินิเกมตอบคำถาม</h3>
   <div id="quiz"></div>
 </section>
 
 <!-- เหตุผลที่รัก -->
-<section id="reasons" class="card-sec reveal after gate">
-  <h3 class="script">เหตุผลที่รักน้อง</h3>
+<section id="reasons" class="card-sec after gate">
+  <h3>เหตุผลที่รักน้อง</h3>
   <button class="btn" id="reasonBtn">สุ่มเหตุผล 💌</button>
   <p class="reason" id="reason">กดปุ่มดูสิ…</p>
 </section>
 
 <!-- ของขวัญ -->
-<section class="card-sec reveal after gate">
-  <h3 class="script">ของขวัญชิ้นเล็กๆ</h3>
+<section class="card-sec after gate">
+  <h3>ของขวัญชิ้นเล็กๆ</h3>
   <div class="gift" id="gift">🎁</div>
   <p class="hint">แตะกล่องของขวัญเพื่อเปิด 🎁</p>
 </section>
 
 <footer class="after">Made with ❤️ just for you</footer>
 
-<audio id="music" loop src="music.mp3"></audio>
-<button class="music-btn" id="musicBtn" title="เปิด/ปิดเพลง">🎵</button>
+</main>
 
 <div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-label="ของขวัญ">
   <div class="mbox">
