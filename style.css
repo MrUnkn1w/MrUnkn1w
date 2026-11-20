@@ -82,3 +82,9 @@ footer{text-align:center;padding:30px;opacity:.7;position:relative;z-index:1}
 .cat figcaption{padding:8px 0 2px;color:var(--deep);font-weight:700}
 .opt{display:block;margin:10px auto;min-width:200px}
 .opt:disabled{cursor:default}
+
+/* ล็อกเนื้อหาจนกว่าจะเป่าเค้ก */
+html.locked,html.locked body{overflow:hidden}
+html.locked .after{display:none}
+.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}

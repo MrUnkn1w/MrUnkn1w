@@ -1,6 +1,7 @@
 /* ====== แก้ข้อมูลตรงนี้ได้เลย ====== */
 const CONFIG = {
   name: "ตะวัน",                  // ชื่อ/ชื่อเล่นแฟน
+  unlockAt: "2026-11-21T00:00:00", // เวลาที่เริ่มเป่าเค้กได้ (เวลาเครื่องของผู้เปิด)
   birthday: "11-21",              // วันเกิด รูปแบบ เดือน-วัน (MM-DD)
   from: "จากคนที่รักตะวันที่สุด",   // ชื่อคนเขียน
   letter:
@@ -68,20 +69,20 @@ $("gallery").innerHTML = CONFIG.photos.map((p, i) =>
      <figcaption>${p.caption}</figcaption></figure>`).join("");
 
 // นับถอยหลัง
-function nextBirthday() {
-  const [m, d] = CONFIG.birthday.split("-").map(Number);
-  const now = new Date();
-  let t = new Date(now.getFullYear(), m - 1, d);
-  if (t < new Date(now.getFullYear(), now.getMonth(), now.getDate())) t = new Date(now.getFullYear() + 1, m - 1, d);
-  return t;
-}
+let unlocked = false, blown = false;
+document.documentElement.classList.add("locked");
+$("hint").textContent = "ยังเป่าเค้กไม่ได้นะ รอให้นับถอยหลังจบก่อน 🔒";
 function tick() {
-  const t = nextBirthday(), now = new Date();
-  if (t.toDateString() === now.toDateString()) {
-    $("countdown").innerHTML = `<div style="font-size:1.2rem">🎉 วันนี้วันเกิดเธอ! 🎉</div>`;
+  const now = new Date(), at = new Date(CONFIG.unlockAt);
+  if (now >= at) {
+    if (!unlocked) {
+      unlocked = true;
+      if (!blown) $("hint").textContent = "ถึงเวลาแล้ว! แตะที่เค้กเพื่อเป่าเทียน 🕯️";
+    }
+    $("countdown").innerHTML = `<div style="font-size:1.2rem">🎉 วันนี้วันเกิด${CONFIG.name}! 🎉</div>`;
     return;
   }
-  const s = Math.floor((t - now) / 1000);
+  const s = Math.floor((at - now) / 1000);
   const v = [[Math.floor(s / 86400), "วัน"], [Math.floor(s % 86400 / 3600), "ชม."],
              [Math.floor(s % 3600 / 60), "นาที"], [s % 60, "วินาที"]];
   $("countdown").innerHTML = v.map(([n, l]) => `<div><b>${n}</b><span>${l}</span></div>`).join("");
@@ -127,13 +128,19 @@ function boom() {
 
 // เป่าเทียน
 $("cake").onclick = () => {
-  const f = $("flame");
-  if (f.classList.toggle("out")) {
-    boom();
-    $("hint").textContent = "🎉 สุขสันต์วันเกิดนะ! อย่าลืมขอพรด้วยล่ะ 🎉";
-  } else {
-    $("hint").textContent = "แตะที่เค้กเพื่อเป่าเทียน 🕯️";
+  if (blown) return;
+  const cake = $("cake");
+  if (!unlocked) {
+    cake.classList.remove("shake"); void cake.offsetWidth; cake.classList.add("shake");
+    $("hint").textContent = "ยังไม่ถึงเวลานะ 🔒 รอให้นับถอยหลังจบก่อน";
+    return;
   }
+  blown = true;
+  $("flame").classList.add("out");
+  boom();
+  $("hint").textContent = "🎉 สุขสันต์วันเกิดนะ! อย่าลืมขอพรด้วยล่ะ 🎉 เลื่อนลงไปดูของขวัญได้เลย ↓";
+  document.documentElement.classList.remove("locked");
+  setTimeout(() => $("wish").scrollIntoView({ behavior: "smooth" }), 2500);
 };
 
 // แมวทั้งสาม
