@@ -180,11 +180,18 @@ $("reasonBtn").onclick = () => {
   last = i; $("reason").innerHTML = "💗 " + fmt(CONFIG.reasons[i]);
 };
 
-// ของขวัญ
+// ของขวัญ (ป๊อปอัปรายการเหตุผลที่รัก)
+const modal = $("modal");
+$("coupon").innerHTML = fmt(CONFIG.gift);
+$("rlist").innerHTML = CONFIG.reasons.map(r => `<li>${fmt(r)}</li>`).join("");
+const closeModal = () => { modal.hidden = true; };
 $("gift").onclick = () => {
   $("gift").classList.add("open"); $("gift").textContent = "🎉";
-  $("giftMsg").innerHTML = fmt(CONFIG.gift); boom();
+  modal.hidden = false; modal.querySelector(".mbox").scrollTop = 0; boom();
 };
+$("mclose").onclick = closeModal;
+modal.onclick = e => { if (e.target === modal) closeModal(); };
+addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
 
 // แสดงผลตอนเลื่อน
 const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && e.target.classList.add("show")), { threshold: .15 });
