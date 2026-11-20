@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Happy Birthday 🎂</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="confetti"></canvas>
+<div class="hearts" id="hearts"></div>
+
+<!-- หน้าแรก -->
+<section class="hero" id="hero">
+  <p class="small">วันนี้เป็นวันพิเศษของคนพิเศษ</p>
+  <h1 class="script">Happy Birthday</h1>
+  <h2 id="name">ที่รัก</h2>
+  <div class="cake" id="cake" title="แตะเพื่อเป่าเทียน">
+    <div class="flame" id="flame"></div>
+    <div class="candle"></div>
+    <div class="layer l1"></div>
+    <div class="layer l2"></div>
+    <div class="plate"></div>
+  </div>
+  <p class="hint" id="hint">แตะที่เค้กเพื่อเป่าเทียน 🕯️</p>
+  <div class="countdown" id="countdown"></div>
+  <a href="#wish" class="down">↓</a>
+</section>
+
+<!-- คำอวยพร -->
+<section id="wish" class="card-sec reveal">
+  <h3 class="script">ถึงเธอ…</h3>
+  <p id="letter" class="letter"></p>
+</section>
+
+<!-- ไทม์ไลน์ -->
+<section class="card-sec reveal">
+  <h3 class="script">เรื่องราวของเรา</h3>
+  <div class="timeline" id="timeline"></div>
+</section>
+
+<!-- รูปภาพ -->
+<section class="card-sec reveal">
+  <h3 class="script">ความทรงจำ</h3>
+  <div class="gallery" id="gallery"></div>
+</section>
+
+<!-- เหตุผลที่รัก -->
+<section class="card-sec reveal">
+  <h3 class="script">เหตุผลที่รักเธอ</h3>
+  <button class="btn" id="reasonBtn">สุ่มเหตุผล 💌</button>
+  <p class="reason" id="reason">กดปุ่มดูสิ…</p>
+</section>
+
+<!-- ของขวัญ -->
+<section class="card-sec reveal">
+  <h3 class="script">ของขวัญชิ้นเล็กๆ</h3>
+  <div class="gift" id="gift">🎁</div>
+  <p class="hint">แตะกล่องของขวัญ</p>
+  <p class="reason" id="giftMsg"></p>
+</section>
+
+<footer>Made with ❤️ just for you</footer>
+
+<audio id="music" loop src="music.mp3"></audio>
+<button class="music-btn" id="musicBtn" title="เปิด/ปิดเพลง">🎵</button>
+
+<script src="script.js"></script>
+</body>
+</html>
