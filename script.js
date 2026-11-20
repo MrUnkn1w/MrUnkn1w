@@ -18,11 +18,18 @@ const CONFIG = {
     { name: "หมูปิ้ง", img: "photos/mupping.jpg", pos: "70% 45%" }
   ],
   quiz: [
-    { q: "แมวตัวไหนสีขาวทั้งตัว?", a: ["ไข่ตุ๋น", "ปลาเผา", "หมูปิ้ง"], c: 0 },
-    { q: "ปลาเผามีสีอะไร?", a: ["ดำล้วน", "ขาวมีลายดำๆ", "ส้มทั้งตัว"], c: 1 },
-    { q: "หมูปิ้งมีสีอะไรตรงท้อง?", a: ["สีขาว", "สีดำ", "สีเทา"], c: 0 },
-    { q: "ที่บ้านน้องมีแมวกี่ตัว?", a: ["2 ตัว", "3 ตัว", "5 ตัว"], c: 1 },
-    { q: "น้องอายุเท่าไหร่ปีนี้?", a: ["21", "22", "23"], c: 1 }
+    { q: "เค้าเกิดวันไหน?", right: "9 ธันวาคม 2004", wrong: ["21 พฤศจิกายน 2004", "9 ธันวาคม 2005", "19 ธันวาคม 2004"] },
+    { q: "เค้าชอบ YouTuber คนไหนมากที่สุด?", right: "9arm", wrong: ["rubsarb", "คืนพุธมุดผ้าห่ม", "YaiMakMak"] },
+    { q: "เค้าชอบอาหารชาติไหนมากที่สุด?", right: "ญี่ปุ่น", wrong: ["เกาหลี", "อิตาลี", "ไทย"] },
+    { q: "เค้าชอบกีฬาอะไรมากที่สุด?", right: "ว่ายน้ำ", wrong: ["ฟุตบอล", "บาสเกตบอล", "แบดมินตัน"] },
+    { q: "เค้าชอบสีอะไรมากที่สุด?", right: "Sky Blue", wrong: ["Pastel Pink", "Mint Green", "Lavender"] }
+  ],
+  mocks: [
+    "ว๊ายยย อ่อนๆ 🤭",
+    "ผิดจ้าาา ไม่ใส่ใจเค้าเลยนะเนี่ย 🙄",
+    "ตอบแบบนี้เลยหรอเบบี๋ 555 ลองใหม่!",
+    "โอ๊ยยย ผิดอีกแย้ว คิดดีๆ สิน้องอ้วง 😤",
+    "เสียใจนะ เค้าน้อยใจแย้ว 🥲 ตอบใหม่!"
   ],
   timeline: [
     { date: "วันที่เราเจอกัน",   text: "วันแรกที่ได้รู้จักเธอ" },
@@ -145,27 +152,34 @@ $("cake").onclick = () => {
 $("cats").innerHTML = CONFIG.cats.map(c =>
   `<figure class="cat"><img src="${c.img}" alt="${c.name}" style="object-position:${c.pos}"><figcaption>${c.name}</figcaption></figure>`).join("");
 
-// มินิเกม
-let qi = 0, score = 0;
+// มินิเกม: ต้องตอบถูกครบทุกข้อ ถึงจะเลื่อนไปดูเหตุผลกับของขวัญได้
+document.documentElement.classList.add("gated");
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+let qi = 0, mockI = -1;
 function showQ() {
   const box = $("quiz");
   if (qi >= CONFIG.quiz.length) {
-    const full = score === CONFIG.quiz.length;
-    box.innerHTML = `<p class="reason">ได้ ${score}/${CONFIG.quiz.length} ${full ? "เก่งมากเลยเบบี๋ รู้ใจแมวทุกตัว 🐱💕" : "ไม่เป็นไร เบบี๋ก็น่ารักอยู่ดี ❤️"}</p>
-      <button class="btn" id="again">เล่นอีกครั้ง</button>`;
-    if (full) boom();
-    $("again").onclick = () => { qi = 0; score = 0; showQ(); };
+    box.innerHTML = `<p class="reason">ถูกครบทั้ง ${CONFIG.quiz.length} ข้อเลย! 🥰 รู้ใจเค้าจริงๆ<br>เลื่อนลงไปดูเหตุผลที่รักน้องกับของขวัญได้เลย ↓</p>`;
+    document.documentElement.classList.remove("gated");
+    boom();
+    setTimeout(() => $("reasons").scrollIntoView({ behavior: "smooth" }), 1800);
     return;
   }
   const q = CONFIG.quiz[qi];
   box.innerHTML = `<p class="reason">ข้อ ${qi + 1}/${CONFIG.quiz.length}: ${q.q}</p>` +
-    q.a.map((t, i) => `<button class="btn opt" data-i="${i}">${t}</button>`).join("");
+    shuffle([q.right, ...q.wrong]).map(t => `<button class="btn opt">${t}</button>`).join("") +
+    `<p class="mock" id="mock"></p>`;
   box.querySelectorAll(".opt").forEach(b => b.onclick = () => {
-    const ok = +b.dataset.i === q.c;
-    if (ok) score++;
-    b.style.background = ok ? "#4caf50" : "#e53935";
-    box.querySelectorAll(".opt").forEach(x => x.disabled = true);
-    setTimeout(() => { qi++; showQ(); }, 700);
+    if (b.textContent === q.right) {
+      b.classList.add("good");
+      box.querySelectorAll(".opt").forEach(x => x.disabled = true);
+      setTimeout(() => { qi++; showQ(); }, 700);
+    } else {
+      b.classList.add("bad"); b.disabled = true;
+      mockI = (mockI + 1 + Math.random() * (CONFIG.mocks.length - 1) | 0) % CONFIG.mocks.length;
+      const m = $("mock"); m.textContent = CONFIG.mocks[mockI];
+      m.classList.remove("shake"); void m.offsetWidth; m.classList.add("shake");
+    }
   });
 }
 showQ();

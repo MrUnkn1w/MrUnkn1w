@@ -103,3 +103,9 @@ html.locked .after{display:none}
 .rlist li{padding-left:28px;position:relative;line-height:1.7}
 .rlist li::before{content:"💗";position:absolute;left:0;top:0}
 .mclose{position:absolute;top:10px;right:12px;border:0;background:var(--rose);color:#fff;width:32px;height:32px;border-radius:50%;font-size:1rem;cursor:pointer}
+
+/* ล็อกเหตุผล/ของขวัญจนกว่าจะตอบเกมถูกครบ */
+html.gated .gate{display:none}
+.opt.good{background:#4caf50}
+.opt.bad{background:#e53935;opacity:.7;text-decoration:line-through}
+.mock{margin-top:12px;font-weight:700;color:var(--deep);min-height:1.8em}
